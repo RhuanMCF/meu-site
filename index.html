@@ -85,6 +85,11 @@
 </div>
 
 <script>
+    // Cursor já começa piscando no campo usuário ao abrir a página
+window.onload = () => {
+    document.getElementById("usuario").focus();
+};
+
 function fazerLogin() {
     const usuario = document.getElementById("usuario").value;
     const senha = document.getElementById("senha").value;
