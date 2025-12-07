@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Usuário Bruno</title>
+
+<style>
+    body {
+        margin:0;
+        padding:0;
+        background:#1e90ff;
+        color:white;
+        font-family:Arial;
+    }
+
+    header {
+        text-align:center;
+        font-size:35px;
+        font-weight:bold;
+        padding:20px 0;
+        background:rgba(0,0,0,0.2);
+    }
+
+    .container {
+        margin-top:40px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:40px;
+    }
+
+    p {
+        font-size:26px;
+        font-weight:bold;
+        text-shadow:1px 1px 4px rgba(0,0,0,0.6);
+    }
+
+    /* ---------------- CARD COM EFEITO FLIP ---------------- */
+    .card {
+        width:250px;
+        height:250px;
+        perspective:1000px;          /* Profundidade 3D */
+        cursor:pointer;
+    }
+
+    .inner {
+        width:100%;
+        height:100%;
+        position:relative;
+        transition:transform 0.8s;
+        transform-style:preserve-3d;
+    }
+
+    .card.flip .inner {
+        transform:rotateY(180deg);
+    }
+
+    .front, .back {
+        position:absolute;
+        width:100%;
+        height:100%;
+        backface-visibility:hidden;
+        border-radius:15px;
+    }
+
+    /* frente da imagem */
+    .front {
+        background:url("imagens/foto1.png") top/cover;
+    }
+
+    /* verso com texto */
+    .back {
+        background:#0008;
+        color:white;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:22px;
+        font-weight:bold;
+        transform:rotateY(180deg);
+        text-align:center;
+        padding:10px;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>
+    👤 Olá, Bruno! Você é um usuário comum.
+</header>
+
+<div class="container">
+
+    <p>Seja bem-vindo ao sistema!<br>
+    Aqui ficará o conteúdo da sua área de usuário.</p>
+
+    <!-- CARD CLICÁVEL -->
+    <div class="card" onclick="this.classList.toggle('flip')">
+        <div class="inner">
+            <div class="front"></div>
+            <div class="back">🚫 NÃO USEM DROGAS</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
