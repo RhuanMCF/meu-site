@@ -1,45 +1,76 @@
-# app.py
-from flask import Flask, render_template_string, send_from_directory
-import os
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 app = Flask(__name__)
+app.secret_key = 'mude-esta-chave-depois'  # segurança
 
-# Caminho da pasta atual (onde está o app.py)
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+# ============================
+#       ROTA DE LOGIN
+# ============================
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        usuario = request.form.get('usuario').strip().lower()
+        senha = request.form.get('senha').strip()
 
-# Função para ler o HTML direto do arquivo
-def ler_html(nome_arquivo):
-    caminho = os.path.join(BASE_DIR, nome_arquivo)
-    with open(caminho, 'r', encoding='utf-8') as f:
-        return f.read()
+        # --- LOGIN DO ADMIN ---
+        if usuario == 'admin' and senha == 'admin123':
+            session['usuario'] = 'admin'
+            return redirect(url_for('admin'))
 
-@app.route('/')
-def index():
-    html = ler_html('index.html')
-    return render_template_string(html)
+        # --- LOGIN DO BRUNO ---
+        elif usuario == 'bruno' and senha == 'bruno123':
+            session['usuario'] = 'bruno'
+            return redirect(url_for('bruno'))
 
-@app.route('/bruno')
-def bruno():
-    html = ler_html('bruno.html')
-    return render_template_string(html)
+        # --- LOGIN DO ICARO ---
+        elif usuario in ['icaro', 'ícaro'] and senha == 'icaro123':
+            # Mantemos sem acento dentro da sessão para evitar bug
+            session['usuario'] = 'icaro'
+            return redirect(url_for('icaro'))
 
-@app.route('/ícaro')
-def cicero():
-    html = ler_html('ícaro.html')
-    return render_template_string(html)
+        # --- LOGIN INVÁLIDO ---
+        else:
+            flash('Usuário ou senha incorretos!')
+
+    return render_template('login.html')
+
+
+# ============================
+#       ROTAS PROTEGIDAS
+# ============================
 
 @app.route('/admin')
 def admin():
-    html = ler_html('admin.html')
-    return render_template_string(html)
+    if session.get('usuario') != 'admin':
+        return redirect(url_for('login'))
+    return render_template('admin.html')
 
-# Servir as imagens direto da pasta
-@app.route('/<path:caminho>')
-def servir_arquivos(caminho):
-    # Serve imagens, css, js etc que estiverem em subpastas ou na raiz
-    if caminho.endswith(('.png', '.jpg', '.jpeg', '.gif', '.css', '.js')):
-        return send_from_directory(BASE_DIR, caminho)
-    return "Arquivo não encontrado", 404
 
+@app.route('/bruno')
+def bruno():
+    if session.get('usuario') != 'bruno':
+        return redirect(url_for('login'))
+    return render_template('bruno.html')
+
+
+@app.route('/icaro')
+def icaro():
+    if session.get('usuario') != 'icaro':
+        return redirect(url_for('login'))
+    return render_template('icaro.html')
+
+
+# ============================
+#       LOGOUT
+# ============================
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+
+# ============================
+#       EXECUÇÃO
+# ============================
 if __name__ == '__main__':
     app.run(debug=True)
